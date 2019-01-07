@@ -1,0 +1,123 @@
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]og/
+[Ll]ogs/
+
+ProgramRun_*
+unity_log_threaded*
+NetworkStream_*
+
+#
+ExportedObj/
+.consulo/
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+.vs
+.vscode
+
+# ------ BUILDS ------ #
+*.app/
+
+# ---------------[ Unity generated ]------------------ #
+Temp/
+#Obj/
+UnityGenerated/
+*/Library
+ 
+# ----[ Visual Studio / MonoDevelop generated ]------- #
+ 
+ExportedObj/
+*.svd
+*.userprefs
+*.csproj
+*.pidb
+*.suo
+*.sln
+*.user
+*.unityproj
+*.booproj
+
+
+*.svd.meta
+*.userprefs.meta
+*.csproj.meta
+*.pidb.meta
+*.suo.meta
+*.sln.meta
+*.user.meta
+*.unityproj.meta
+*.booproj.meta
+ 
+# -------------[ OS generated ]------------------------ #
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+Thumbs.db.meta
+Assets/External/*.meta
+TestResult.xml
+
+TestResult*.xml
+*.mdb
+*.mdb.meta
+game_BaseGame/Dlls/
+game_BaseGame/obj/
+game_test1/obj/
+Library/
+obj/
+Assets/External/Linked/
+
+# Gradle local files
+.gradle
+
+# http://stackoverflow.com/questions/11968531/what-to-gitignore-from-the-idea-folder
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
+# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
+
+# User-specific stuff:
+**/.idea/workspace.xml
+**/.idea/tasks.xml
+**/.idea/dictionaries
+**/.idea/vcs.xml
+**/.idea/jsLibraryMappings.xml
+
+# Sensitive or high-churn files:
+**/.idea/dataSources.ids
+**/.idea/dataSources.xml
+**/.idea/dataSources.local.xml
+**/.idea/sqlDataSources.xml
+**/.idea/dynamic.xml
+**/.idea/uiDesigner.xml
+
+# Gradle:
+**/.idea/gradle.xml
+**/.idea/libraries
+
+# Mongo Explorer plugin:
+**/.idea/mongoSettings.xml
+
+## File-based project format:
+*.iws
+*.ipr
+
+## Plugin-specific files:
+
+# IntelliJ
+/out/
+
+# mpeltonen/sbt-idea plugin
+.idea_modules/
