@@ -6,26 +6,27 @@
     /**
     * <summary>Signalling context for signals within a branch of the Unity hierarchy.</summary>
     */
-    public class SignallingContext : MonoBehaviour {
+    public class HierarchySignallingContext : MonoBehaviour {
 
+        // Disabling "field is never assigned to" warning as it can be set in Unity inspector
         #pragma warning disable CS0649
         [SerializeField] private UnityEngine.Object[] staticSignalProviders;
         #pragma warning restore CS0649
 
         Dictionary<System.Type, object> _signalProviders;
 
-        SignallingContext _rootContext;
-        bool IsRoot { get {return _rootContext == null;} }
+        HierarchySignallingContext _parentContext;
+        bool IsRoot { get {return _parentContext == null;} }
         
 
         void Awake() {
             Init();
         }
         void Start() {
-            _rootContext = FindContext(this);
+            _parentContext = SignalDiscovery.FindContext(this);
         }
 
-        void Init() {
+        internal void Init() {
             if (_signalProviders != null) return;
 
             _signalProviders = new Dictionary<System.Type, object>();
@@ -60,32 +61,6 @@
                 return null;
             }
             return sp;
-        }
-
-        static public SignallingContext FindContext(Transform t) {
-            var signalStation = t.GetComponentInParent<SignallingContext>();
-            if (signalStation == null) return null;
-
-            // Ensure initialization regardless of script execution order etc
-            signalStation.Init();
-
-            return signalStation;
-        }
-        static public SignallingContext FindContext(MonoBehaviour script) {
-            return FindContext(script.transform);
-        }
-
-        static public T GetSignalProvider<T>(Transform t) where T : class {
-            var context = FindContext(t);
-            if (context == null) {
-                Debug.LogWarningFormat("Context not found");
-                return null;
-            }
-
-            return context.GetSignalProvider<T>();
-        }
-        static public T GetSignalProvider<T>(MonoBehaviour script) where T : class {
-            return GetSignalProvider<T>(script.transform);
         }
 
     }

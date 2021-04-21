@@ -9,95 +9,51 @@ namespace huacanacha.signal
     /// </summary>
     public class CachedSignal : Signal, ICachedSignal {
         bool _hasFired;
-        public bool HasDispatched {get {return _hasFired;} }
+        public bool HasValue {get => _hasFired;}
 
-   	    public override void AddListener(Action callback) {
-		    AddListenerAndFireCached(callback);
+   	    override public SubscriptionReceipt Subscribe(Action callback) {
+            var receipt = base.SubscribeOnce(callback);
+            if (_hasFired) {
+                callback();
+            }
+            return receipt;
+        }
+
+   	    override public SubscriptionReceipt SubscribeOnce(Action callback) {
+            if (_hasFired) {
+                callback();
+                return new SubscriptionReceipt(() => {});
+            }
+            return base.SubscribeOnce(callback);
 	    }
-
-   	    public override void AddOnce(Action callback) {
-		    FireCachedOrAddOnce(callback);
-	    }
-
-
-        /// <summary>
-        /// Adds the listener and calls immediately if cached signal exists.
-        /// </summary>
-        /// <returns>True if calling immediately.</returns>
-        /// <param name="callback">Callback.</param>
-        public bool AddListenerAndFireCached(Action callback) {
-            base.AddListener(callback);
-            if (_hasFired) {
-                callback();
-                return true;
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// If a cached signal exists call the callback now. Otherwise call one time on next Dispatch.
-        /// </summary>
-        /// <returns>True if calling immediately.</returns>
-        /// <param name="callback">Callback.</param>
-        public bool FireCachedOrAddOnce(Action callback) {
-            if (_hasFired) {
-                callback();
-                return true;
-            }
-            base.AddOnce(callback);
-            return false;
-        }
-
-        /// <summary>
-        /// Call the specified callback if a cached signal exists.
-        /// </summary>
-        /// <returns>True if able to call</returns>
-        /// <param name="callback">Callback.</param>
-        public bool FireCached(Action callback) {
-            if (_hasFired) {
-                callback();
-                return true;
-            }
-            return false;
-        }
 
         public void ClearCache() {
             _hasFired = false;
         }
 
-        new public void Dispatch() {
+        override public void Send() {
             _hasFired = true;
-            base.Dispatch();
+            base.Send();
         }
     }
 
     /// <summary>CachedSignal with one parameter.</summary>
     public class CachedSignal<T> : Signal<T>, ICachedSignal {
-        MutableTuple<T> _signalCache;
-        public bool HasDispatched { get { return _signalCache != null; } }
-        public T Value {get {return _signalCache != null ? _signalCache.Item1 : default(T);} }
-
-	    public override void AddListener(Action<T> callback) {
-		    AddListenerAndFireCached(callback);
-	    }
-
-	    public override void AddOnce(Action<T> callback) {
-		    FireCachedOrAddOnce(callback);
-	    }
+        T _cachedValue;
+        public bool HasValue { get; private set;}
+        public T Value => HasValue ? _cachedValue : default(T);
 
 		/// <summary>
 		/// Adds the listener and calls immediately if cached signal exists.
 		/// </summary>
 		/// <returns>True if calling immediately.</returns>
 		/// <param name="callback">Callback.</param>
-		public bool AddListenerAndFireCached(Action<T> callback) {
-            base.AddListener(callback);
-            //UnityEngine.Debug.LogFormat("AddListenerAndFire()[{2}] - '{0}' -> '{1}'", _cachedSignal != null, _cachedSignal.Item1, GetHashCode());
-            if (_signalCache != null) {
-                callback(_signalCache.Item1);
-                return true;
+		override public SubscriptionReceipt Subscribe(Action<T> callback) {
+            var receipt = base.Subscribe(callback);
+            if (HasValue) {
+                callback(_cachedValue);
             }
-            return false;
+            return receipt;
         }
 
         /// <summary>
@@ -105,124 +61,67 @@ namespace huacanacha.signal
         /// </summary>
         /// <returns>True if calling immediately.</returns>
         /// <param name="callback">Callback.</param>
-        public bool FireCachedOrAddOnce(Action<T> callback) {
-            if (_signalCache != null) {
-                callback(_signalCache.Item1);
-                return true;
+        override public SubscriptionReceipt SubscribeOnce(Action<T> callback) {
+            if (HasValue) {
+                callback(_cachedValue);
+                return SubscriptionReceipt.emptyReceipt;
             }
-            base.AddOnce(callback);
-            return false;
-        }
+            return base.SubscribeOnce(callback);
+	    }
 		
-		/// <summary>
-		/// Call the specified callback if a cached signal exists.
-		/// </summary>
-		/// <returns>True if able to call</returns>
-		/// <param name="callback">Callback.</param>
-		public bool FireCached(Action<T> callback) {
-            if (_signalCache != null) {
-                callback(_signalCache.Item1);
-                return true;
-            }
-            return false;
-        }
-
         public void ClearCache() {
-            _signalCache = null;
+            _cachedValue = default(T);
+            HasValue = false;
         }
 
-        new public void Dispatch(T t) {
-	        // UnityEngine.Debug.LogFormat("Dispatch()[{0}] - '{1}'", GetHashCode(), t);
-            SetCache(t);
-            base.Dispatch(t);
-        }
+        new public void Send(T value) {
+            // Set cache
+            _cachedValue = value;
+            HasValue = true;
 
-        private void SetCache(T t) {
-            if (_signalCache == null) {
-                _signalCache = new MutableTuple<T>(t);
-            } else {
-                _signalCache.Item1 = t;
-            }
+            base.Send(value);
         }
     }
 
     /// <summary>CachedSignal with two parameters.</summary>
-    public class CachedSignal<T, U> : Signal<T,U>, ICachedSignal {
-        MutableTuple<T,U> _signalCache;
-        public bool HasDispatched { get { return _signalCache != null; } }
+    public class CachedSignal<T, U> : Signal<T,U>, ICachedSignal<T,U> {
+        (T, U) _cachedValue;
+        public bool HasValue {get; private set;}
+        public ValueTuple<T,U> Value => HasValue ? _cachedValue : default((T,U));
 
 	    /// <summary>
         /// Adds the listener, and calls immediately if cached signal exists.
         /// </summary>
-   	    public override void AddListener(Action<T,U> callback) {
-		    AddListenerAndFireCached(callback);
-	    }
-
-        /// <summary>
-        /// If a cached signal exists call the callback now. Otherwise call one time on next Dispatch.
-        /// </summary>
-        public override void AddOnce(Action<T,U> callback) {
-		    FireCachedOrAddOnce(callback);
-	    }
-
-        /// <summary>
-        /// Adds the listener, and calls immediately if cached signal exists.
-        /// </summary>
-        /// <returns>True if calling immediately.</returns>
-        /// <param name="callback">Callback.</param>
-        public bool AddListenerAndFireCached(Action<T, U> callback) {
-            base.AddListener(callback);
-            // UnityEngine.Debug.LogFormat("AddListenerAndCall()[{3}] - '{0}' -> '{1}', '{2}'", _signalCache != null, _signalCache.Item1, _signalCache.Item2, GetHashCode());
-            if (_signalCache != null) {
-                callback(_signalCache.Item1, _signalCache.Item2);
-                return true;
+   	    override public SubscriptionReceipt Subscribe(Action<T,U> callback) {
+            var receipt = base.Subscribe(callback);
+            if (HasValue) {
+                callback(_cachedValue.Item1, _cachedValue.Item2);
             }
-            return false;
+            return receipt;
         }
 
         /// <summary>
         /// If a cached signal exists call the callback now. Otherwise call one time on next Dispatch.
         /// </summary>
-        /// <returns>True if calling immediately.</returns>
-        /// <param name="callback">Callback.</param>
-        public bool FireCachedOrAddOnce(Action<T, U> callback) {
-            if (_signalCache != null) {
-                callback(_signalCache.Item1, _signalCache.Item2);
-                return true;
+        override public SubscriptionReceipt SubscribeOnce(Action<T,U> callback) {
+            if (HasValue) {
+                callback(_cachedValue.Item1, _cachedValue.Item2);
+                return SubscriptionReceipt.emptyReceipt;
             }
-            base.AddOnce(callback);
-            return false;
-        }
-
-        /// <summary>
-        /// Call the specified callback if a cached signal exists.
-        /// </summary>
-        /// <returns>True if able to call</returns>
-        /// <param name="callback">Callback.</param>
-        public bool FireCached(Action<T,U> callback) {
-            if (_signalCache != null) {
-                callback(_signalCache.Item1, _signalCache.Item2);
-                return true;
-            }
-            return false;
-        }
+            return base.SubscribeOnce(callback);
+	    }
 
         public void ClearCache() {
-            _signalCache = null;
+            HasValue = false;
         }
 
-        new public void Dispatch(T t, U u) {
-            SetCache(t, u);
-            base.Dispatch(t, u);
-        }
+        override public void Send(T t, U u) {
+            // Set cache
+            _cachedValue.Item1 = t;
+            _cachedValue.Item2 = u;
+            HasValue = true;
 
-        private void SetCache(T t, U u) {
-            if (_signalCache == null) {
-                _signalCache = new MutableTuple<T,U>(t, u);
-            } else {
-                _signalCache.Item1 = t;
-                _signalCache.Item2 = u;
-            }
+            base.Send(t, u);
         }
     }
 
