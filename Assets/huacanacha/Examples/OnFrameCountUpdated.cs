@@ -1,20 +1,23 @@
 using UnityEngine;
+using huacanacha.signal;
+
 
 [RequireComponent(typeof(TMPro.TextMeshProUGUI))]
 public class OnFrameCountUpdated : MonoBehaviour {
     TMPro.TextMeshProUGUI text;
     SystemsSignals _signals;
     SystemThatDoesSomething _system;
+
+    SubscriptionReceipt systemSubReceipt;
+
     void Start() {
         // Debug.Log($"{System.Reflection.MethodBase.GetCurrentMethod().Name}()");
         text = GetComponent<TMPro.TextMeshProUGUI>();
         _signals = huacanacha.unity.signal.SignalDiscovery.GetSignalProvider<SystemsSignals>(this);
-        _signals.systemThatDoesSomething.Subscribe(OnSystemChanged);
+        systemSubReceipt = _signals.systemThatDoesSomething.Subscribe(OnSystemChanged);
     }
     void OnDestroy() {
-        // Debug.Log($"{System.Reflection.MethodBase.GetCurrentMethod().Name}()");
-        _signals = huacanacha.unity.signal.SignalDiscovery.GetSignalProvider<SystemsSignals>(this);
-        _signals?.systemThatDoesSomething.UnsubscribeByCallback(OnSystemChanged);
+        systemSubReceipt.Unsubscribe();
     }
 
     void OnSystemChanged(SystemThatDoesSomething system) {
