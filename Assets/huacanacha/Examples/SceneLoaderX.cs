@@ -13,7 +13,7 @@ public class SceneLoaderX : MonoBehaviour {
     }
     public readonly Signals signals = new Signals();
 
-    public SceneReference bootstrapScene;
+    // public SceneReference bootstrapScene;
     public SceneReference initialScene;
     // public TMPro.TMP_Text text;
     bool loadImmediately = false;

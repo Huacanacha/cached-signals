@@ -64,7 +64,7 @@ namespace huacanacha.signal
         override public SubscriptionReceipt SubscribeOnce(Action<T> callback) {
             if (HasValue) {
                 callback(_cachedValue);
-                return SubscriptionReceipt.emptyReceipt;
+                return new SubscriptionReceipt();
             }
             return base.SubscribeOnce(callback);
 	    }
@@ -106,7 +106,7 @@ namespace huacanacha.signal
         override public SubscriptionReceipt SubscribeOnce(Action<T,U> callback) {
             if (HasValue) {
                 callback(_cachedValue.Item1, _cachedValue.Item2);
-                return SubscriptionReceipt.emptyReceipt;
+                return new SubscriptionReceipt();//.emptyReceipt;
             }
             return base.SubscribeOnce(callback);
 	    }

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using huacanacha.signal;
 using huacanacha.unity.signal;
 
-public class DataCounterIncrementCommand : ButtonCommand<DataSignals, int>
+public class DataCounterIncrementCommand : ButtonCommand<DataValueSignals, int>
 {
     public int incrementAmount = 1;
     public int initialVaue = 42;
@@ -14,5 +14,5 @@ public class DataCounterIncrementCommand : ButtonCommand<DataSignals, int>
         }
         signal.Send(signal.Value+incrementAmount);
     }
-    protected override CachedSignal<int> GetSignal(DataSignals signalProvider) => signalProvider.counter;
+    protected override CachedSignal<int> GetSignal(DataValueSignals signalProvider) => signalProvider.counter;
 }

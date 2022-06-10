@@ -3,8 +3,8 @@ using UnityEngine.UI;
 using huacanacha.signal;
 using huacanacha.unity.signal;
 
-public class DataTextSubmitCommand : InputFieldCommand<DataSignals, string>
+public class DataTextSubmitCommand : InputFieldCommand<DataValueSignals, string>
 {
     protected override void Command(CachedSignal<string> signal, string value) => signal.Send(value);
-    protected override CachedSignal<string> GetSignal(DataSignals signalProvider) => signalProvider.text;
+    protected override CachedSignal<string> GetSignal(DataValueSignals signalProvider) => signalProvider.text;
 }

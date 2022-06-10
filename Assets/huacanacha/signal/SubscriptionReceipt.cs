@@ -2,15 +2,17 @@ using System;
 
 namespace huacanacha.signal {
 
-    public struct SubscriptionReceipt {
+    public readonly struct SubscriptionReceipt {
         private readonly Action _unsubscribe;
 
         internal SubscriptionReceipt(Action unsubscribe) => _unsubscribe = unsubscribe;
 
-        public void Unsubscribe() => _unsubscribe();
+        public void Unsubscribe() => _unsubscribe?.Invoke();
 
-        // Nothing to see here...
-        static internal readonly SubscriptionReceipt emptyReceipt = new SubscriptionReceipt(() => {});
+        public bool IsValid {get => _unsubscribe != null;}
+
+        // // Nothing to see here...
+        // static internal readonly SubscriptionReceipt emptyReceipt = new SubscriptionReceipt(null);
     }
 
 }
