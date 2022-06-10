@@ -11,11 +11,24 @@ namespace huacanacha.signal
         bool _hasFired;
         public bool HasValue {get => _hasFired;}
 
-   	    override public SubscriptionReceipt Subscribe(Action callback) {
+   	    /// <summary>
+		/// Adds the listener and calls immediately if the signal has fired.
+		/// </summary>
+		/// <param name="callback">Callback function.</param>
+        override public SubscriptionReceipt Subscribe(Action callback) {
             var receipt = base.SubscribeOnce(callback);
             if (_hasFired) {
                 callback();
             }
+            return receipt;
+        }
+
+        /// <summary>
+		/// Adds the listener but DOES NOT call it yet, even if the signal has fired.
+		/// </summary>
+		/// <param name="callback">Callback function.</param>
+        public SubscriptionReceipt DelayedSubscribe(Action callback) {
+            var receipt = base.Subscribe(callback);
             return receipt;
         }
 
@@ -44,9 +57,8 @@ namespace huacanacha.signal
         public T Value => HasValue ? _cachedValue : default(T);
 
 		/// <summary>
-		/// Adds the listener and calls immediately if cached signal exists.
+		/// Adds the listener and calls immediately with the cached value, if it exists.
 		/// </summary>
-		/// <returns>True if calling immediately.</returns>
 		/// <param name="callback">Callback.</param>
 		override public SubscriptionReceipt Subscribe(Action<T> callback) {
             var receipt = base.Subscribe(callback);
@@ -57,10 +69,18 @@ namespace huacanacha.signal
         }
 
         /// <summary>
+		/// Adds the listener but DOES NOT call it with the cached value.
+		/// </summary>
+		/// <param name="callback">Callback function.</param>
+        public SubscriptionReceipt DelayedSubscribe(Action<T> callback) {
+            var receipt = base.Subscribe(callback);
+            return receipt;
+        }
+
+        /// <summary>
         /// If a cached signal exists call the callback now. Otherwise call one time on next Dispatch.
         /// </summary>
-        /// <returns>True if calling immediately.</returns>
-        /// <param name="callback">Callback.</param>
+        /// <param name="callback">Callback function.</param>
         override public SubscriptionReceipt SubscribeOnce(Action<T> callback) {
             if (HasValue) {
                 callback(_cachedValue);
@@ -92,11 +112,21 @@ namespace huacanacha.signal
 	    /// <summary>
         /// Adds the listener, and calls immediately if cached signal exists.
         /// </summary>
+		/// <param name="callback">Callback function.</param>
    	    override public SubscriptionReceipt Subscribe(Action<T,U> callback) {
             var receipt = base.Subscribe(callback);
             if (HasValue) {
                 callback(_cachedValue.Item1, _cachedValue.Item2);
             }
+            return receipt;
+        }
+
+        /// <summary>
+		/// Adds the listener but DOES NOT call it with the cached value.
+		/// </summary>
+		/// <param name="callback">Callback function.</param>
+        public SubscriptionReceipt DelayedSubscribe(Action<T,U> callback) {
+            var receipt = base.Subscribe(callback);
             return receipt;
         }
 
