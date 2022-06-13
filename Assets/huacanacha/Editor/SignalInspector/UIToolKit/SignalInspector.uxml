@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <Style src="project://database/Assets/huacanacha/Editor/SignalInspector/UIToolKit/EditorStyle.uss?fileID=7433441132597879392&amp;guid=4d0f678e6796046638dabd587f61ae38&amp;type=3#EditorStyle" />
+    <ui:VisualElement class="heading">
+        <ui:Label text="SignalInspector" display-tooltip-when-elided="true" class="heading" />
+        <ui:Button text="Refresh" display-tooltip-when-elided="true" name="refresh-button" />
+    </ui:VisualElement>
+    <ui:VisualElement name="content-root" />
+</ui:UXML>

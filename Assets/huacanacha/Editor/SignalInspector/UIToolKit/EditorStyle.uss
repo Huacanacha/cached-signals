@@ -1,0 +1,15 @@
+.heading {
+    background-color: rgb(79, 79, 79);
+    padding-left: 3px;
+    padding-right: 3px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.heading > Label {
+    font-size: 18px;
+    color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+}

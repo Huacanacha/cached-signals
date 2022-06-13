@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/huacanacha/Editor/SignalInspector/UIToolKit/EditorStyle.uss?fileID=7433441132597879392&amp;guid=4d0f678e6796046638dabd587f61ae38&amp;type=3#EditorStyle" />
+    <ui:VisualElement name="divider" style="height: 1.5px; background-color: rgb(255, 255, 255);" />
+    <ui:VisualElement style="flex-direction: row;">
+        <ui:Label text="SingalCotextNameHere" display-tooltip-when-elided="true" name="signal-context-name" style="-unity-font-style: bold; font-size: 14px;" />
+        <ui:Label text="ContextType" display-tooltip-when-elided="true" name="signal-context-type" style="-unity-font-style: italic; -unity-text-align: lower-left;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="content-root" />
+</ui:UXML>

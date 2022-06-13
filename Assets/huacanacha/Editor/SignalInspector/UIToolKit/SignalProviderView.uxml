@@ -1,0 +1,6 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:Template name="SignalView" src="project://database/Assets/huacanacha/Editor/SignalInspector/UIToolKit/SignalView.uxml?fileID=9197481963319205126&amp;guid=46eb8c9ae02e84235a5171567f7ad642&amp;type=3#SignalView" />
+    <ui:Foldout text="Signals" name="fold-out">
+        <ui:Instance template="SignalView" name="SignalView" style="display: none;" />
+    </ui:Foldout>
+</ui:UXML>
