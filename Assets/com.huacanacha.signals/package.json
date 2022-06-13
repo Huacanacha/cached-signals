@@ -12,5 +12,17 @@
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/Huacanacha/cached-signals.git?path=/Assets/com.huacanacha.signals"
-	}
+	},
+	"samples": [
+		{
+            "displayName": "Simple Example",
+            "description": "A scene and bindings to demonstrate Hierarchy, Scene, and Global Signalling Contexts",
+            "path": "Samples~/Examples"
+        },
+		{
+            "displayName": "Game Menu Example",
+            "description": "Game Menu Example",
+            "path": "Samples~/GameMenuExample"
+        }
+    ]
 }
