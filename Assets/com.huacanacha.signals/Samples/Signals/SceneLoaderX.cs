@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 using huacanacha.signal;
 using huacanacha.unity.signal;
 
+namespace huacanacha.signals.examples {
+
 public class SceneLoaderX : MonoBehaviour {
 
     public class Signals {
@@ -71,4 +73,6 @@ public class SceneLoaderX : MonoBehaviour {
         Debug.Log($"Sending: sceneIsCurrentlyLoading = {scene != null}");
         _gameStateSignals.sceneIsCurrentlyLoading.Send(scene != null);
     }
+}
+
 }

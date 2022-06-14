@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using huacanacha.signal;
 
+namespace huacanacha.signals.examples {
+
 public class SystemThatDoesSomethingElse : MonoBehaviour {
 
     public class Signals {
@@ -18,4 +20,6 @@ public class SystemThatDoesSomethingElse : MonoBehaviour {
     void Update() {
         signals.frameCount.Send(Time.frameCount);
     }
+}
+
 }

@@ -1,6 +1,7 @@
 using UnityEngine;
 using huacanacha.signal;
 
+namespace huacanacha.signals.examples {
 
 [RequireComponent(typeof(TMPro.TextMeshProUGUI))]
 public class OnFrameCountUpdated : MonoBehaviour {
@@ -46,4 +47,6 @@ public class OnFrameCountUpdated : MonoBehaviour {
     void OnValueChanged(int value) {
         text.text = value.ToString();
     } 
+}
+
 }

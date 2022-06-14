@@ -4,6 +4,8 @@ using huacanacha.signal;
 using huacanacha.unity.signal;
 using UnityEngine;
 
+namespace huacanacha.signals.examples {
+
 public class Settings : MonoBehaviour, ISignalSystem<Settings.SystemSignals> {
     #region Signalling section
     public class SystemSignals {
@@ -51,4 +53,6 @@ public class Settings : MonoBehaviour, ISignalSystem<Settings.SystemSignals> {
         _signals.settingsData.Send(_data);
     }
     #endregion
+}
+
 }

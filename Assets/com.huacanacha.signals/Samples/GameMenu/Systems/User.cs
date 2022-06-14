@@ -3,6 +3,8 @@ using huacanacha.signal;
 using huacanacha.unity.signal;
 using UnityEngine;
 
+namespace huacanacha.signals.examples {
+
 public class User : MonoBehaviour, ISignalSystem<User.SystemSignals> {
     #region Signalling section
     public class SystemSignals {
@@ -60,4 +62,6 @@ public class User : MonoBehaviour, ISignalSystem<User.SystemSignals> {
         PlayerPrefs.SetInt("user_USER_ACCEPTED_PRIVACY_POLICY", _data.hasAcceptedPrivacyPolicy ? 1 : 0);
     }
     #endregion
+}
+
 }

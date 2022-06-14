@@ -4,6 +4,8 @@ using UnityEngine;
 using huacanacha.signal;
 using huacanacha.unity.signal;
 
+namespace huacanacha.signals.examples {
+
 public class DateTimeSystem : MonoBehaviour {
     TimeSignals timeSignals;
     DateSignals dateSignals;
@@ -18,4 +20,6 @@ public class DateTimeSystem : MonoBehaviour {
         timeSignals?.time.Send(dt.ToString("HH:mm:ss"));
         dateSignals?.date.Send($"{dt.ToString("yyyy-MM-dd")} {1/Time.deltaTime:0}fps");
     }
+}
+
 }

@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace huacanacha.signals.examples {
+
 public class InitEventSystem : MonoBehaviour {
     public GameObject eventSystem;
 
@@ -11,4 +13,6 @@ public class InitEventSystem : MonoBehaviour {
         }
         Destroy(this.gameObject);
     }
+}
+
 }

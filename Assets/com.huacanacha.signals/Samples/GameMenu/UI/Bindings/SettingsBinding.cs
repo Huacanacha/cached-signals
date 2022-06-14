@@ -1,6 +1,8 @@
 using UnityEngine;
 using huacanacha.signal;
 
+namespace huacanacha.signals.examples {
+
 public class SettingsBinding : TextBinding<AppSystemSignals, Settings, string>
 {
     // protected override CachedSignal<string> GetSignal(GameSessionSignals signalProvider) => signalProvider.username;
@@ -9,4 +11,6 @@ public class SettingsBinding : TextBinding<AppSystemSignals, Settings, string>
     protected override CachedSignal<Settings> GetSignal(AppSystemSignals signalProvider) => signalProvider.settings;
     override protected string DefaultValue {get => "";}
     override protected System.Func<Settings, string> Converter {get => (s) => s != null ? "nope" : s.SettingsData.ToString();}
+}
+
 }

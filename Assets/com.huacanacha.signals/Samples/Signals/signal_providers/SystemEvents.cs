@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+namespace huacanacha.signals.examples {
+
 public class SystemEvents : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -15,4 +17,6 @@ public class SystemEvents : MonoBehaviour
     {
         
     }
+}
+
 }
