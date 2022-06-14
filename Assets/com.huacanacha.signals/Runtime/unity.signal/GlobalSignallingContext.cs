@@ -1,7 +1,6 @@
 namespace huacanacha.unity.signal
 {
     using System.Collections.Generic;
-    using huacanacha.unity.util;
     using UnityEngine;
 
     /**
