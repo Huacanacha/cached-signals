@@ -8,6 +8,8 @@ using UnityEditor.SceneManagement;
 using UnityEditor.VersionControl;
 #endif
 
+namespace huacanacha.signals.examples {
+
 // Author: JohannesMP (2018-08-12)
 //
 // A wrapper that provides the means to safely serialize Scene Asset References.
@@ -592,3 +594,5 @@ public class SceneReferencePropertyDrawer : PropertyDrawer
 }
 
 #endif
+
+}

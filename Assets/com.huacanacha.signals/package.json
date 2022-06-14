@@ -15,14 +15,9 @@
 	},
 	"samples": [
 		{
-            "displayName": "Simple Example",
-            "description": "A scene and bindings to demonstrate Hierarchy, Scene, and Global Signalling Contexts",
-            "path": "Samples/Examples"
-        },
-		{
-            "displayName": "Game Menu Example",
-            "description": "Game Menu Example",
-            "path": "Samples/GameMenuExample"
+            "displayName": "Examples",
+            "description": "Two example scenes:\nSignals - demonstrating Hierarchy, Scene, & Global Signalling Contexts, and UI bindings\nGameMenu - simlpe game menu with UI bindings",
+            "path": "Samples/"
         }
     ]
 }
