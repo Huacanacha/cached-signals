@@ -17,7 +17,7 @@
 		{
             "displayName": "Examples",
             "description": "Two example scenes:\nSignals - demonstrating Hierarchy, Scene, & Global Signalling Contexts, and UI bindings\nGameMenu - simlpe game menu with UI bindings",
-            "path": "Samples/"
+            "path": "Samples~/"
         }
     ]
 }
