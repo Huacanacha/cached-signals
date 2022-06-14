@@ -2,6 +2,8 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+namespace huacanacha.signals.examples {
+
 public class SceneLoader : MonoBehaviour {  
 
     public SceneReference sceneToLoad;
@@ -45,4 +47,6 @@ public class SceneLoader : MonoBehaviour {
 
         Destroy(gameObject);
     }
+}
+
 }

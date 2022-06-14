@@ -17,12 +17,12 @@
 		{
             "displayName": "Simple Example",
             "description": "A scene and bindings to demonstrate Hierarchy, Scene, and Global Signalling Contexts",
-            "path": "Samples~/Examples"
+            "path": "Samples/Examples"
         },
 		{
             "displayName": "Game Menu Example",
             "description": "Game Menu Example",
-            "path": "Samples~/GameMenuExample"
+            "path": "Samples/GameMenuExample"
         }
     ]
 }

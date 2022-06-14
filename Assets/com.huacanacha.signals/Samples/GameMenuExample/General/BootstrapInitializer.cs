@@ -5,6 +5,8 @@ using UnityEngine.SceneManagement;
 using huacanacha.signal;
 using huacanacha.unity.signal;
 
+namespace huacanacha.signals.examples {
+
 [RequireComponent(typeof(SceneLoader))]
 public class BootstrapInitializer : SignalController<AppPhaseSignals> {
 
@@ -41,4 +43,6 @@ public class BootstrapInitializer : SignalController<AppPhaseSignals> {
         }
         sceneLoader.LoadScene();
     }
+}
+
 }
