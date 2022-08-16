@@ -19,7 +19,7 @@ public abstract class SignalController<SIGNAL_TYPE> : MonoBehaviour
     }
 
     protected void AttachSignals() {
-        _signals ??= huacanacha.unity.signal.SignalDiscovery.GetSignalProvider<SIGNAL_TYPE>(this);
+        _signals ??= huacanacha.unity.signal.SignalDiscovery.GetLocalSignalProvider<SIGNAL_TYPE>(this);
         if (_signals == null) {
             Debug.LogError($"Could not obtain SignalProvider '{typeof(SIGNAL_TYPE).Name}' for '{GetType().Name}'");
             enabled = false;

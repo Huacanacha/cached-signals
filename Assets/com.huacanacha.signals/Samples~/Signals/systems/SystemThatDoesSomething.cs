@@ -13,7 +13,7 @@ public class SystemThatDoesSomething : MonoBehaviour {
 
     void Start() {
         // I AM THE SystemThatDoesSomething, so tell everyone who cares ;)
-        var signallingContect = huacanacha.unity.signal.SignalDiscovery.GetSignalProvider<SystemsSignals>(this);
+        var signallingContect = huacanacha.unity.signal.SignalDiscovery.GetSignalProviderAnywhere<SystemsSignals>(this);
         signallingContect.systemThatDoesSomething.Send(this);
     }
 

@@ -14,7 +14,7 @@ public class OnFrameCountUpdated : MonoBehaviour {
     void Start() {
         // Debug.Log($"{System.Reflection.MethodBase.GetCurrentMethod().Name}()");
         text = GetComponent<TMPro.TextMeshProUGUI>();
-        _signals = huacanacha.unity.signal.SignalDiscovery.GetSignalProvider<SystemsSignals>(this);
+        _signals = huacanacha.unity.signal.SignalDiscovery.GetSignalProviderAnywhere<SystemsSignals>(this);
         systemSubReceipt = _signals.systemThatDoesSomething.Subscribe(OnSystemChanged);
     }
     void OnDestroy() {

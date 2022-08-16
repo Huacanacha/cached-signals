@@ -11,8 +11,8 @@ public class DateTimeSystem : MonoBehaviour {
     DateSignals dateSignals;
 
     void OnEnable() {
-        timeSignals = SignalDiscovery.GetSignalProvider<TimeSignals>(this);
-        dateSignals = SignalDiscovery.GetSignalProvider<DateSignals>(this);
+        timeSignals = SignalDiscovery.GetSignalProviderAnywhere<TimeSignals>(this);
+        dateSignals = SignalDiscovery.GetSignalProviderAnywhere<DateSignals>(this);
     }
 
     void Update() {

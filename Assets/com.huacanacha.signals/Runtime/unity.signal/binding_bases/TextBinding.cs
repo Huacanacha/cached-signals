@@ -30,7 +30,7 @@ public abstract class TextBinding<TSignalProvider, TSignalValue, TBoundValue> : 
         }
         
         // Note: if efficient enable/disable behaviour is desired, cache the reference to the Signal (and skip subsequent discovery)
-        var signalProvider = SignalDiscovery.GetSignalProvider<TSignalProvider>(this);
+        var signalProvider = SignalDiscovery.GetSignalProviderAnywhere<TSignalProvider>(this);
         if (signalProvider != null) {
             subscriptionReceipt = GetSignal(signalProvider).Subscribe(OnValueChanged);
         }

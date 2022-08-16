@@ -31,7 +31,7 @@ public class User : MonoBehaviour, ISignalSystem<User.SystemSignals> {
     #region System - main part!
     GameSessionSignals _gameSessionSignals;
     void Start() {
-        _gameSessionSignals = SignalDiscovery.GetSignalProvider<GameSessionSignals>(this);
+        _gameSessionSignals = SignalDiscovery.GetSignalProviderAnywhere<GameSessionSignals>(this);
         _gameSessionSignals.user.Send(this);
         LoadUserData();
     }

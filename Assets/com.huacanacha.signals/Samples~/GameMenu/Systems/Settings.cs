@@ -35,7 +35,7 @@ public class Settings : MonoBehaviour, ISignalSystem<Settings.SystemSignals> {
 
     #region System logic & API section (i.e. main part!)
     void Start() {
-        SignalDiscovery.GetSignalProvider<AppSystemSignals>(this).settings.Send(this);
+        SignalDiscovery.GetSignalProviderAnywhere<AppSystemSignals>().settings.Send(this);
         StartCoroutine(PretendToLoadSettingsData());
     }
 

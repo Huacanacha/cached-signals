@@ -26,7 +26,7 @@ public abstract class ButtonCommand<TSignalProvider, TSignalValue> : MonoBehavio
     void OnEnable() {
         // Debug.Log($"{System.Reflection.MethodBase.GetCurrentMethod().Name}()");
         if (signal == null) {
-            var signalProvider = SignalDiscovery.GetSignalProvider<TSignalProvider>(this);
+            var signalProvider = SignalDiscovery.GetSignalProviderAnywhere<TSignalProvider>(this);
             if (signalProvider != null) {
                 signal = GetSignal(signalProvider);
             }

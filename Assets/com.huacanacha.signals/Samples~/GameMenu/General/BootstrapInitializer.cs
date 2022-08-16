@@ -26,7 +26,7 @@ public class BootstrapInitializer : SignalController<AppPhaseSignals> {
 
 
         // SubscribeOnce will trigger once as soon as Settings system comes online
-        SignalDiscovery.GetSignalProvider<AppSystemSignals>(this).settings.SubscribeOnce((settings) => {
+        SignalDiscovery.GetSignalProviderAnywhere<AppSystemSignals>().settings.SubscribeOnce((settings) => {
             // Then we wait for settings to load and initialize before removing from wait list
             settings.Signals.settingsData.SubscribeOnce((settingsData) => waitForSystems.Remove(typeof(Settings)));
         });

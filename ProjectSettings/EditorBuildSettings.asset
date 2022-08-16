@@ -6,15 +6,15 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/com.huacanacha.signals/Runtime/GameMenuExample/Scenes/bootstrap.unity
+    path: Assets/com.huacanacha.signals/Samples/GameMenu/Scenes/bootstrap.unity
     guid: 4e2b8592cf7a24bffa1d87386b2d08c1
   - enabled: 1
-    path: Assets/com.huacanacha.signals/Runtime/GameMenuExample/Scenes/main_menu.unity
+    path: Assets/com.huacanacha.signals/Samples/GameMenu/Scenes/main_menu.unity
     guid: 4964965d9e5d240c28008f6851a23726
   - enabled: 1
-    path: Assets/com.huacanacha.signals/Runtime/Examples/SignalsTestScene.unity
+    path: Assets/com.huacanacha.signals/Samples/Signals/SignalsTestScene.unity
     guid: f7af39c91287c46bca1c6009d2316bfb
   - enabled: 1
-    path: Assets/com.huacanacha.signals/Runtime/Examples/BootstrapScene.unity
+    path: Assets/com.huacanacha.signals/Samples/Signals/BootstrapScene.unity
     guid: 32880415550194a0aa27e8f586bc5a6b
   m_configObjects: {}

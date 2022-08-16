@@ -5,30 +5,43 @@ namespace huacanacha.unity.signal
 
     public static class SignalDiscovery {
 
+        static public T GetSignalProvider<T>() where T : class {
+            return GetSceneSignalProvider<T>();
+        }
+        static public T GetSignalProvider<T>(MonoBehaviour script) where T : class {
+            return GetSceneSignalProvider<T>(script.gameObject.scene);
+        }
+
+        static public T GetSignalProviderAnywhere<T>() where T : class {
+            return GetSceneSignalProvider<T>() ?? GetAppSignalProvider<T>();
+        }
+        static public T GetSignalProviderAnywhere<T>(MonoBehaviour script) where T : class {
+            return GetLocalSignalProvider<T>(script.transform, searchSceneAndApp: true);
+        }
+
         /// <summary>
         /// Finds the requested signal provider <typeparamref name="T" /> in the HierarchySignallingContext in the parents of the specified scripts transform.
-        /// If the HierarchySignallingContext is not found, also searches the SceneSignallingContext and GobalSignallingContext.
         /// </summary>
         /// <returns>The signal provider, or NULL if context or provider are not found.</returns>
-        static public T GetSignalProvider<T>(MonoBehaviour script) where T : class {
-            return GetSignalProvider<T>(script.transform);
+        static public T GetLocalSignalProvider<T>(MonoBehaviour script) where T : class {
+            return GetLocalSignalProvider<T>(script.transform, false);
         }
 
         /// <summary>
         /// Finds the requested signal provider <typeparamref name="T" /> in the HierarchySignallingContext in the parents of the specified transform.
-        /// If <paramref name="allowRecursive" /> is true, also searches the SceneSignallingContext and GobalSignallingContext if needed.
+        /// <param name="searchSceneAndApp">Also searches the SceneSignallingContext and GobalSignallingContext, if not found locally.
         /// </summary>
         /// <returns>The signal provider, or NULL if context or provider are not found.</returns>
-        static public T GetSignalProvider<T>(Transform t, bool allowRecursive = true) where T : class {
-            var context = FindContext(t, allowRecursive: allowRecursive);
+        static public T GetLocalSignalProvider<T>(Transform t, bool searchSceneAndApp = false) where T : class {
+            var context = FindContext(t, allowRecursive: searchSceneAndApp);
             if (context == null) {
                 Debug.LogWarningFormat("Context not found");
                 return null;
             }
 
-            GetSceneSignalProvider<MonoBehaviour>(new MonoBehaviour());
+            GetSceneSignalProvider<MonoBehaviour>(t.gameObject.scene);
 
-            return context.GetSignalProvider<T>(allowRecursive);
+            return context.GetSignalProvider<T>(searchSceneAndApp);
         }
 
         /// <summary>
@@ -63,7 +76,7 @@ namespace huacanacha.unity.signal
         /// Finds the requested signal provider <typeparamref name="T" /> in the GlobalSignallingContext.
         /// </summary>
         /// <returns>The signal provider, or NULL if context or provider are not found.</returns>
-        static public T GetGlobalSignalProvider<T>() where T : class {
+        static public T GetAppSignalProvider<T>() where T : class {
             var context = FindGlobalContext();
             if (context == null) {
                 Debug.LogWarningFormat("Context not found");

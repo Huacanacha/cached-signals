@@ -23,7 +23,7 @@ public class SceneLoaderX : MonoBehaviour {
     private GameStateSignals _gameStateSignals;
 
     void Start() {
-        _gameStateSignals = SignalDiscovery.GetSignalProvider<GameStateSignals>(this);
+        _gameStateSignals = SignalDiscovery.GetSignalProviderAnywhere<GameStateSignals>();
         if (_gameStateSignals == null) {
             Debug.LogError("GameStateSignals not found, and therefore we simply cannot proceed :(");
             Destroy(gameObject);

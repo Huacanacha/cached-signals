@@ -25,7 +25,7 @@ public abstract class ButtonInteractableBinding<TSignalProvider> : MonoBehaviour
         subscriptionReceipt?.Unsubscribe(); // Does nothing if no valid receipt
         
         // Note: if efficient enable/disable behaviour is desired, cache the reference to the Signal (and skip subsequent discovery)
-        var signalProvider = SignalDiscovery.GetSignalProvider<TSignalProvider>(this);
+        var signalProvider = SignalDiscovery.GetLocalSignalProvider<TSignalProvider>(this);
         if (signalProvider != null) {
             var signal = GetSignal(signalProvider);
             subscriptionReceipt = signal.Subscribe(OnValueChanged);
