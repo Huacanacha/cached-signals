@@ -4,6 +4,8 @@
 [Ll]og/
 [Ll]ogs/
 
+UserSettings/
+
 ProgramRun_*
 unity_log_threaded*
 NetworkStream_*
