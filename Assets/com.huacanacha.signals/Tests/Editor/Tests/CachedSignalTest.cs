@@ -7,6 +7,30 @@
     using UnityEngine.TestTools;
     using huacanacha.signal;
 
+    class UnsubscribeInCallback {
+        SubscriptionReceipt _receipt;
+        public bool Called { get; private set; } = false;
+        public UnsubscribeInCallback(Signal signal) {
+            _receipt = signal.Subscribe(HandleSignalThenUnsubscribe);
+        }
+        void HandleSignalThenUnsubscribe() {
+            Called = true;
+            _receipt.Unsubscribe();
+        }
+    }
+
+    class UnsubscribeInCallback<T> {
+        SubscriptionReceipt _receipt;
+        public T Value { get; private set; } = default(T);
+        public UnsubscribeInCallback(Signal<T> signal) {
+            _receipt = signal.Subscribe(HandleSignalThenUnsubscribe);
+        }
+        void HandleSignalThenUnsubscribe(T value) {
+            Value = value;
+            _receipt.Unsubscribe();
+        }
+    }
+
     public class CachedSignalTest
     {
         [Test]
@@ -18,20 +42,22 @@
             System.Action dontCallMe = () => {Assert.Fail();};
 
             // Before firing signal
-            signal.Subscribe(dontCallMe);
-            signal.Subscribe(callMe);
+            var dontCallMeReceipt = signal.Subscribe(dontCallMe);
+            var callMeReceipt = signal.Subscribe(callMe);
             Assert.IsFalse(signal.HasValue);
             Assert.IsFalse(calledMe);
 
             // After firing signal
-            signal.UnsubscribeByCallback(dontCallMe);
+            // signal.UnsubscribeByCallback(dontCallMe);
+            dontCallMeReceipt.Unsubscribe();
             signal.Send();
             Assert.IsTrue(signal.HasValue);
             Assert.IsTrue(calledMe);
 
             // After removing listener & firing
             calledMe = false;
-            signal.UnsubscribeByCallback(callMe);
+            callMeReceipt.Unsubscribe();
+            // signal.UnsubscribeByCallback(callMe);
             signal.Send();
             Assert.IsFalse(calledMe);
 
@@ -97,6 +123,86 @@
 
             Assert.IsTrue(aaa);
             Assert.IsTrue(bbb);
+
+            // Case D - unsubscribe during callback... fancy!
+            signal = new CachedSignal();
+            var unsubscriber = new UnsubscribeInCallback(signal);
+
+            Assert.IsFalse(unsubscriber.Called);
+
+            Assert.DoesNotThrow(() => {
+                signal.Send();
+            });
+
+            Assert.IsTrue(unsubscriber.Called);
+        }
+
+        [Test]
+        public void ZeroParameterRecursion() {
+            var signal = new CachedSignal();
+            bool l1 = false;
+            bool l2 = false;
+
+            var receipt = signal.Subscribe(() => {
+                l1 = true;
+                signal.SubscribeOnce(() => {
+                    l2 = true;
+                });
+            });
+
+            Assert.DoesNotThrow(() => signal.Send());
+
+            Assert.IsTrue(l1);
+            Assert.IsTrue(l2);
+
+            signal = new CachedSignal();
+            int i1 = 0;
+            int i2 = 0;
+            int i3 = 0;
+            int i4 = 0;
+            int i5 = 0;
+
+            receipt = signal.Subscribe(() => {
+                ++i4;
+            });
+
+            signal.Subscribe(() => {
+                receipt.Unsubscribe();
+                ++i1;
+                SubscriptionReceipt? sr = null;
+                if (i1 == 1) {
+                    signal.SubscribeOnce(() => {
+                        ++i2;
+                    });
+                    sr = signal.Subscribe(() => {
+                        ++i5;
+                    });
+                }
+                signal.Send(); // Signal system prevents re-sending withing send callbacks
+                sr?.Unsubscribe();
+            });
+
+            // Send twice
+            Assert.DoesNotThrow(() =>
+                signal.Send()
+            );
+            signal.Send();
+
+            Assert.AreEqual(2, i1);
+            Assert.AreEqual(1, i2);
+            Assert.AreEqual(1, i4);
+            Assert.AreEqual(2, i5); // Once cached, once on outer Send
+
+            signal = new CachedSignal();
+            signal.Subscribe(() => {
+                ++i3;
+            });
+
+            signal.Send();
+
+            Assert.AreEqual(2, i1);
+            Assert.AreEqual(1, i2);
+            Assert.AreEqual(1, i3);
         }
 
         [Test]
@@ -142,6 +248,17 @@
             // After clearing fired signal
             signal.ClearCache();
             Assert.IsFalse(signal.HasValue);
+
+            // Case D - unsubscribe during callback... fancy!
+            signal.ClearCache();
+            var unsubscriber = new UnsubscribeInCallback<int>(signal);
+
+            Assert.AreEqual(0, unsubscriber.Value);
+
+            Assert.DoesNotThrow(() => {
+                signal.Send(999);
+            });
+            Assert.AreEqual(999, unsubscriber.Value);
         }
 
         [Test]

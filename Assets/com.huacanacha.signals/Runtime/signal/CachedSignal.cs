@@ -16,7 +16,7 @@ namespace huacanacha.signal
 		/// </summary>
 		/// <param name="callback">Callback function.</param>
         override public SubscriptionReceipt Subscribe(Action callback) {
-            var receipt = base.SubscribeOnce(callback);
+            var receipt = base.Subscribe(callback);
             if (_hasFired) {
                 callback();
             }
