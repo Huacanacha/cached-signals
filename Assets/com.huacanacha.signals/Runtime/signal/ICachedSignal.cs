@@ -12,10 +12,12 @@ namespace huacanacha.signal {
     public interface ICachedSignal<T> : ICachedSignal {
         /// <summary>Returns the cached value if cached, otherwise default(T).</summary>
         T Value {get;}
+        bool SendIfChanged(T value);
     }
 
     public interface ICachedSignal<T,U> : ICachedSignal {
         /// <summary>Returns the cached value if cached, otherwise default(T).</summary>
         ValueTuple<T,U> Value {get;}
+        bool SendIfChanged(T t, U u);
     }
 }

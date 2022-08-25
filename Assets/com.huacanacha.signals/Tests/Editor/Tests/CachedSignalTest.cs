@@ -7,30 +7,6 @@
     using UnityEngine.TestTools;
     using huacanacha.signal;
 
-    class UnsubscribeInCallback {
-        SubscriptionReceipt _receipt;
-        public bool Called { get; private set; } = false;
-        public UnsubscribeInCallback(Signal signal) {
-            _receipt = signal.Subscribe(HandleSignalThenUnsubscribe);
-        }
-        void HandleSignalThenUnsubscribe() {
-            Called = true;
-            _receipt.Unsubscribe();
-        }
-    }
-
-    class UnsubscribeInCallback<T> {
-        SubscriptionReceipt _receipt;
-        public T Value { get; private set; } = default(T);
-        public UnsubscribeInCallback(Signal<T> signal) {
-            _receipt = signal.Subscribe(HandleSignalThenUnsubscribe);
-        }
-        void HandleSignalThenUnsubscribe(T value) {
-            Value = value;
-            _receipt.Unsubscribe();
-        }
-    }
-
     public class CachedSignalTest
     {
         [Test]
@@ -306,6 +282,75 @@
             Assert.IsFalse(signal.HasValue);
         }
 
+        [Test]
+        public void OneParameterSendIfChangedTest() {
+            var signal = new CachedSignal<int>();
+            int count = 0;
+            signal.Subscribe((_) => {
+                ++count;
+            });
+
+            Assert.AreEqual(0, count);
+            Assert.IsFalse(signal.HasValue);
+
+            // Does send - first time always sends
+            var result = signal.SendIfChanged(111);
+            Assert.IsTrue(result);
+            Assert.AreEqual(1, count);
+            Assert.AreEqual(111, signal.Value);
+            Assert.IsTrue(signal.HasValue);
+
+            // Does NOT send - value is the same as cached
+            result = signal.SendIfChanged(111);
+            Assert.IsFalse(result);
+            Assert.AreEqual(1, count);
+            Assert.AreEqual(111, signal.Value);
+            Assert.IsTrue(signal.HasValue);
+
+            // Does send - value is different from cached
+            result = signal.SendIfChanged(222);
+            Assert.IsTrue(result);
+            Assert.AreEqual(2, count);
+            Assert.AreEqual(222, signal.Value);
+            Assert.IsTrue(signal.HasValue);
+
+            var refSignal = new CachedSignal<SimpleClass>();
+            var a = new SimpleClass(333);
+            var b = new SimpleClass(444);
+
+            count = 0;
+            refSignal.Subscribe((_) => {
+                ++count;
+            });
+
+            Assert.AreEqual(0, count);
+            Assert.IsFalse(refSignal.HasValue);
+
+            refSignal.SendIfChanged(null);
+            Assert.AreEqual(1, count);
+            Assert.IsTrue(refSignal.HasValue);
+            Assert.AreEqual(null, refSignal.Value);
+
+            refSignal.SendIfChanged(null);
+            Assert.AreEqual(1, count);
+
+            refSignal.SendIfChanged(a);
+            Assert.AreEqual(2, count);
+            Assert.AreEqual(a, refSignal.Value);
+
+            refSignal.SendIfChanged(a);
+            Assert.AreEqual(2, count);
+            Assert.AreEqual(a, refSignal.Value);
+
+            refSignal.SendIfChanged(b);
+            Assert.AreEqual(3, count);
+            Assert.AreEqual(b, refSignal.Value);
+
+            refSignal.SendIfChanged(null);
+            Assert.AreEqual(4, count);
+            Assert.AreEqual(null, refSignal.Value);
+        }
+
         class SimpleClass {
             int Value;
             public SimpleClass(int value) => Value = value;
@@ -482,6 +527,82 @@
             Assert.IsFalse(signal.HasValue);
         }
 
+        [Test]
+        public void TwoParameterSendIfChangedTest() {
+            var signal = new CachedSignal<int, SimpleClass>();
+            int count = 0;
+            signal.Subscribe((_, _) => {
+                ++count;
+            });
 
+            Assert.AreEqual(0, count);
+            Assert.IsFalse(signal.HasValue);
+
+            // Does send - first time always sends
+            var result = signal.SendIfChanged(111, null);
+            Assert.IsTrue(result);
+            Assert.AreEqual(1, count);
+            Assert.AreEqual(System.ValueTuple.Create<int, SimpleClass>(111, null), signal.Value);
+            Assert.IsTrue(signal.HasValue);
+
+            // Does NOT send - value is the same as cached
+            result = signal.SendIfChanged(111, null);
+            Assert.IsFalse(result);
+            Assert.AreEqual(1, count);
+            Assert.AreEqual(System.ValueTuple.Create<int, SimpleClass>(111, null), signal.Value);
+            Assert.IsTrue(signal.HasValue);
+
+            // Does send - value is different from cached
+            result = signal.SendIfChanged(222, null);
+            Assert.IsTrue(result);
+            Assert.AreEqual(2, count);
+            Assert.AreEqual(System.ValueTuple.Create<int, SimpleClass>(222, null), signal.Value);
+            Assert.IsTrue(signal.HasValue);
+
+            var a = new SimpleClass(-77);
+            var b = new SimpleClass(-88);
+            result = signal.SendIfChanged(222, a);
+            Assert.IsTrue(result);
+            Assert.AreEqual(3, count);
+            Assert.AreEqual(System.ValueTuple.Create<int, SimpleClass>(222, a), signal.Value);
+            Assert.IsTrue(signal.HasValue);
+
+            result = signal.SendIfChanged(222, b);
+            Assert.IsTrue(result);
+            Assert.AreEqual(4, count);
+            Assert.AreEqual(System.ValueTuple.Create<int, SimpleClass>(222, b), signal.Value);
+            Assert.IsTrue(signal.HasValue);
+
+            result = signal.SendIfChanged(222, null);
+            Assert.IsTrue(result);
+            Assert.AreEqual(5, count);
+            Assert.AreEqual(System.ValueTuple.Create<int, SimpleClass>(222, null), signal.Value);
+            Assert.IsTrue(signal.HasValue);
+        }
     }
+
+    class UnsubscribeInCallback {
+        SubscriptionReceipt _receipt;
+        public bool Called { get; private set; } = false;
+        public UnsubscribeInCallback(Signal signal) {
+            _receipt = signal.Subscribe(HandleSignalThenUnsubscribe);
+        }
+        void HandleSignalThenUnsubscribe() {
+            Called = true;
+            _receipt.Unsubscribe();
+        }
+    }
+
+    class UnsubscribeInCallback<T> {
+        SubscriptionReceipt _receipt;
+        public T Value { get; private set; } = default(T);
+        public UnsubscribeInCallback(Signal<T> signal) {
+            _receipt = signal.Subscribe(HandleSignalThenUnsubscribe);
+        }
+        void HandleSignalThenUnsubscribe(T value) {
+            Value = value;
+            _receipt.Unsubscribe();
+        }
+    }
+
 }

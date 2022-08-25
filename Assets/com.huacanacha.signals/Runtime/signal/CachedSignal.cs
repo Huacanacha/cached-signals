@@ -94,12 +94,18 @@ namespace huacanacha.signal
             HasValue = false;
         }
 
-        new public void Send(T value) {
+        override public void Send(T value) {
             // Set cache
             _cachedValue = value;
             HasValue = true;
 
             base.Send(value);
+        }
+
+        public bool SendIfChanged(T value) {
+            if (HasValue && object.Equals(value, _cachedValue)) return false;
+            Send(value);
+            return true;
         }
     }
 
@@ -152,6 +158,12 @@ namespace huacanacha.signal
             HasValue = true;
 
             base.Send(t, u);
+        }
+
+        public bool SendIfChanged(T t, U u) {
+            if (HasValue && object.Equals(t, _cachedValue.Item1) && object.Equals(u, _cachedValue.Item2)) return false;
+            Send(t, u);
+            return true;
         }
     }
 
