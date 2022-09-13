@@ -238,6 +238,107 @@
         }
 
         [Test]
+        public void OneParameterHasListenersSignalTest() {
+            var signal = new Signal<int>();
+            var cachedSignal = new CachedSignal<int>();
+
+            int setMeInt = -100;
+            int cached_setMeInt = -100;
+            System.Action<int> setMe = (a) => {setMeInt = a;};
+            System.Action<int> cached_setMe = (a) => {cached_setMeInt = a;};
+
+            Assert.IsFalse(signal.HasListeners);
+            Assert.IsTrue(cachedSignal.HasListeners); // Always true for CachedSignals
+
+            // Signals with no listeners should not run the Send code
+            if (signal.HasListeners) {
+                ++setMeInt;
+                signal.Send(888);
+            }
+            // CachedSignals should always run the Send code, as they cache the value and HasListeners should always be true
+            if (cachedSignal.HasListeners) {
+                ++cached_setMeInt;
+                cachedSignal.Send(555);
+            }
+
+            Assert.AreEqual(-100, setMeInt);
+            Assert.AreEqual(-99, cached_setMeInt);
+            Assert.IsTrue(cachedSignal.HasValue);
+            Assert.AreEqual(555, cachedSignal.Value);
+
+            var sub = signal.Subscribe(setMe);
+            var sub2 = cachedSignal.Subscribe(cached_setMe);
+            Assert.IsTrue(signal.HasListeners);
+            Assert.IsTrue(cachedSignal.HasListeners);
+
+            // Signal and CachedSignal should both run the Send code
+            if (signal.HasListeners) {
+                signal.Send(999);
+            }
+            if (cachedSignal.HasListeners) {
+                cachedSignal.Send(444);
+            }
+
+            Assert.IsTrue(cachedSignal.HasValue);
+            Assert.AreEqual(999, setMeInt);
+            Assert.AreEqual(444, cached_setMeInt);
+
+            sub.Unsubscribe();
+            sub2.Unsubscribe();
+            Assert.IsFalse(signal.HasListeners);
+            Assert.IsTrue(cachedSignal.HasListeners);
+
+            // Same same as above but using SendIfListeners method
+            var sig2 = new Signal<int>();
+            var cachedSig2 = new CachedSignal<int>();
+
+            int s_someNumber = 20;
+            int cs_someNumber = 50;
+            System.Func<int> s_expensiveWorkAction = () => {
+                // Do expensive work
+                ++s_someNumber;
+                return s_someNumber;
+            };
+            System.Func<int> cs_expensiveWorkAction = () => {++cs_someNumber; return cs_someNumber;};
+
+            Assert.IsFalse(sig2.HasListeners);
+            Assert.IsTrue(cachedSig2.HasListeners);
+            Assert.AreEqual(20, s_someNumber);
+            Assert.AreEqual(50, cs_someNumber);
+
+            sig2.SendIfListeners(s_expensiveWorkAction);
+            cachedSig2.SendIfListeners(cs_expensiveWorkAction);
+            Assert.AreEqual(20, s_someNumber); // No change because no listeners, so action doesn't run
+            Assert.AreEqual(51, cs_someNumber); // CachedSignals always Send, so +1 the value
+
+            var s_sub = sig2.Subscribe((a) => {
+                Assert.AreEqual(s_someNumber, a);
+                s_someNumber += 100;
+            });
+            var cs_sub = cachedSig2.Subscribe((a) => {
+                Assert.AreEqual(cs_someNumber, a);
+                cs_someNumber += 100;
+            });
+            Assert.IsTrue(sig2.HasListeners);
+            Assert.IsTrue(cachedSig2.HasListeners);
+            Assert.AreEqual(151, cs_someNumber); // CachedSignals will call on Subscribe, but without redoing the "work"
+
+            sig2.SendIfListeners(s_expensiveWorkAction);
+            cachedSig2.SendIfListeners(cs_expensiveWorkAction);
+            Assert.AreEqual(121, s_someNumber); // Action ran, so number changed from send Func (+1) and from the listener logic (+100)
+            Assert.AreEqual(252, cs_someNumber); // CachedSignals always Send, so +1 and +100
+
+            s_sub.Unsubscribe();
+            cs_sub.Unsubscribe();
+            sig2.SendIfListeners(s_expensiveWorkAction);
+            cachedSig2.SendIfListeners(cs_expensiveWorkAction);
+            Assert.AreEqual(121, s_someNumber); // No change because no listeners, so action doesn't run
+            Assert.AreEqual(253, cs_someNumber); // CachedSignals always Send, so +1 the value
+            Assert.IsFalse(sig2.HasListeners);
+            Assert.IsTrue(cachedSig2.HasListeners);
+        }
+
+        [Test]
         public void OneParameterStringTest() {
             var signal = new CachedSignal<string>();
 

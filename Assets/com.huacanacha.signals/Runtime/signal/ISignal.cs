@@ -1,5 +1,7 @@
 ﻿namespace huacanacha.signal {
     
-    public interface ISignal {}
+    public interface ISignal {
+        bool HasListeners { get; }
+    }
 
 }

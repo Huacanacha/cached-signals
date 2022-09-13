@@ -1,7 +1,6 @@
 namespace huacanacha.signal
 {
     using System;
-    using huacanacha.core;
  
     /// <summary>
     /// CachedSignal with no parameters.
@@ -10,6 +9,7 @@ namespace huacanacha.signal
     public class CachedSignal : Signal, ICachedSignal {
         bool _hasFired;
         public bool HasValue {get => _hasFired;}
+        override public bool HasListeners => true; // Always true, because we cache the value.
 
    	    /// <summary>
 		/// Adds the listener and calls immediately if the signal has fired.
@@ -55,6 +55,7 @@ namespace huacanacha.signal
         T _cachedValue;
         public bool HasValue { get; private set;}
         public T Value => HasValue ? _cachedValue : default(T);
+        override public bool HasListeners => true; // Always true, because we cache the value.
 
 		/// <summary>
 		/// Adds the listener and calls immediately with the cached value, if it exists.
@@ -114,6 +115,7 @@ namespace huacanacha.signal
         (T, U) _cachedValue;
         public bool HasValue {get; private set;}
         public ValueTuple<T,U> Value => HasValue ? _cachedValue : default((T,U));
+        override public bool HasListeners => true; // Always true, because we cache the value.
 
 	    /// <summary>
         /// Adds the listener, and calls immediately if cached signal exists.

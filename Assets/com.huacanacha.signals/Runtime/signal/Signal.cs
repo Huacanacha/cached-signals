@@ -11,6 +11,8 @@ namespace huacanacha.signal
         List<Action> _ToRemove => _toRemove ??= new List<Action>(1);
         bool isSending = false;
 
+        virtual public bool HasListeners => Listeners.Count > 0;
+
         virtual public SubscriptionReceipt Subscribe(Action callback) {
             if (!Listeners.Contains(callback)) {
                 Listeners.Add(callback);
@@ -29,9 +31,6 @@ namespace huacanacha.signal
             for (int i = 0; i < Listeners.Count; i++) {
                 Listeners[i]();
             }
-            // foreach (var action in Listeners) {
-            //     action();
-            // }
             isSending = false;
 
             if (_toRemove?.Count > 0) {
@@ -69,6 +68,8 @@ namespace huacanacha.signal
         List<Action<T>> _ToRemove => _toRemove ??= new List<Action<T>>(1);
         bool isSending = false;
 
+        virtual public bool HasListeners => Listeners.Count > 0;
+
         virtual public SubscriptionReceipt Subscribe(Action<T> callback) {
             if (!Listeners.Contains(callback)) {
                 Listeners.Add(callback);
@@ -82,6 +83,10 @@ namespace huacanacha.signal
         }
 
 
+        virtual public void SendIfListeners(Func<T> getValueFunc) {
+            if (!HasListeners) return;
+            Send(getValueFunc());
+        }
         virtual public void Send(T arg1) {
             if (isSending) return;
             isSending = true;
@@ -118,6 +123,8 @@ namespace huacanacha.signal
         List<Action<T,U>> _ToRemove => _toRemove ??= new List<Action<T,U>>(1);
         bool isSending = false;
 
+        virtual public bool HasListeners => Listeners.Count > 0;
+
         virtual public SubscriptionReceipt Subscribe(Action<T,U> callback) {
             if (!Listeners.Contains(callback)) {
                 Listeners.Add(callback);
@@ -130,6 +137,11 @@ namespace huacanacha.signal
             return Subscribe(callback);
         }
 
+        virtual public void SendIfListeners(Func<(T,U)> getValueFunc) {
+            if (!HasListeners) return;
+            var values = getValueFunc();
+            Send(values.Item1, values.Item2);
+        }
         virtual public void Send(T arg1, U arg2) {
             if (isSending) return;
             isSending = true;
@@ -166,6 +178,8 @@ namespace huacanacha.signal
         List<Action<T,U,V>> _ToRemove => _toRemove ??= new List<Action<T,U,V>>(1);
         bool isSending = false;
 
+        virtual public bool HasListeners => Listeners.Count > 0;
+
         virtual public SubscriptionReceipt Subscribe(Action<T,U,V> callback) {
             if (!Listeners.Contains(callback)) {
                 Listeners.Add(callback);
@@ -178,6 +192,11 @@ namespace huacanacha.signal
             return Subscribe(callback);
         }
 
+        virtual public void SendIfListeners(Func<(T,U,V)> getValueFunc) {
+            if (!HasListeners) return;
+            var values = getValueFunc();
+            Send(values.Item1, values.Item2, values.Item3);
+        }
         virtual public void Send(T arg1, U arg2, V arg3) {
             if (isSending) return;
             isSending = true;
@@ -214,6 +233,8 @@ namespace huacanacha.signal
         List<Action<T,U,V,W>> _ToRemove => _toRemove ??= new List<Action<T,U,V,W>>(1);
         bool isSending = false;
 
+        virtual public bool HasListeners => Listeners.Count > 0;
+
         virtual public SubscriptionReceipt Subscribe(Action<T,U,V,W> callback) {
             if (!Listeners.Contains(callback)) {
                 Listeners.Add(callback);
@@ -226,6 +247,11 @@ namespace huacanacha.signal
             return Subscribe(callback);
         }
 
+        virtual public void SendIfListeners(Func<(T,U,V,W)> getValueFunc) {
+            if (!HasListeners) return;
+            var values = getValueFunc();
+            Send(values.Item1, values.Item2, values.Item3, values.Item4);
+        }
         virtual public void Send(T arg1, U arg2, V arg3, W arg4) {
             if (isSending) return;
             isSending = true;
