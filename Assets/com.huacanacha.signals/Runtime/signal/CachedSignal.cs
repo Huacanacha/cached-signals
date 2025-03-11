@@ -73,10 +73,9 @@ namespace huacanacha.signal
 		/// Adds the listener but DOES NOT call it with the cached value.
 		/// </summary>
 		/// <param name="callback">Callback function.</param>
-        public SubscriptionReceipt DelayedSubscribe(Action<T> callback) {
-            var receipt = base.Subscribe(callback);
-            return receipt;
-        }
+        public SubscriptionReceipt UncachedSubscribe(Action<T> callback) => base.Subscribe(callback);
+        [Obsolete("Use UncachedSubscribe instead.")]
+        public SubscriptionReceipt DelayedSubscribe(Action<T> callback) => UncachedSubscribe(callback);
 
         /// <summary>
         /// If a cached signal exists call the callback now. Otherwise call one time on next Dispatch.
