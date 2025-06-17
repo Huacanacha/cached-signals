@@ -1,7 +1,7 @@
 {
 	"name": "com.huacanacha.signals",
 	"displayName": "Huacanacha Signals",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"unity": "2021.3",
 	"author": "Jason MacRae",
 	"description": "Signalling architecture including cached signals, Unity scene integration, and UI binding.",

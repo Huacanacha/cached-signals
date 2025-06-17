@@ -238,6 +238,53 @@
         }
 
         [Test]
+        public void OneParameterWithInitialValueTest() {
+            // Baseline case - no initial value
+            var signal = new CachedSignal<int>();
+            Assert.IsFalse(signal.HasValue);
+
+            int value = -1;
+            int callCount = 0;
+            System.Action<int> dontCallMe = (a) => {
+                ++callCount;
+                value = a;
+            };
+            signal.Subscribe(dontCallMe);
+            Assert.Zero(callCount);
+            Assert.IsFalse(signal.HasValue);
+            Assert.AreEqual(-1, value);
+
+            // After Send
+            signal.Send(8);
+            Assert.AreEqual(1, callCount);
+            Assert.IsTrue(signal.HasValue);
+            Assert.AreEqual(8, signal.Value);
+
+            // Test case - initial value set
+            signal = new CachedSignal<int>(42);
+            Assert.IsTrue(signal.HasValue);
+            Assert.AreEqual(42, signal.Value);
+
+            value = -1;
+            callCount = 0;
+            Assert.AreEqual(-1, value);
+            System.Action<int> callMeWithoutSending = (a) => {
+                ++callCount;
+                value = a;
+            };
+            signal.Subscribe(callMeWithoutSending);
+            Assert.AreEqual(1, callCount);
+            Assert.IsTrue(signal.HasValue);
+            Assert.AreEqual(42, value);
+
+            // After Send
+            signal.Send(99);
+            Assert.AreEqual(2, callCount);
+            Assert.IsTrue(signal.HasValue);
+            Assert.AreEqual(99, value);
+        }
+
+        [Test]
         public void OneParameterHasListenersSignalTest() {
             var signal = new Signal<int>();
             var cachedSignal = new CachedSignal<int>();
@@ -626,6 +673,51 @@
             // After clearing fired signal
             signal.ClearCache();
             Assert.IsFalse(signal.HasValue);
+        }
+
+        [Test]
+        public void TwoParameterWithInitialValueTest() {
+            // Baseline case - no initial values
+            var signal = new CachedSignal<int,int>();
+            Assert.IsFalse(signal.HasValue);
+
+            int callCount = 0;
+            (int,int) values;
+            System.Action<int,int> dontCallMe = (a,b) => {
+                callCount++;
+                values = (a,b);
+            };
+            signal.Subscribe(dontCallMe);
+            Assert.Zero(callCount);
+            Assert.IsFalse(signal.HasValue);
+            Assert.AreEqual((0,0), signal.Value);
+
+            signal.Send(8, 11);
+            Assert.AreEqual(1, callCount);
+            Assert.IsTrue(signal.HasValue);
+            Assert.AreEqual((8, 11), signal.Value);
+
+            // Test case - initial values set
+            signal = new CachedSignal<int,int>(42, 77);
+            Assert.IsTrue(signal.HasValue);
+            Assert.AreEqual((42, 77), signal.Value);
+
+            callCount = 0;
+            values = (0,0);
+            System.Action<int,int> callMeWithoutSending = (a,b) => {
+                callCount++;
+                values = (a,b);
+            };
+            signal.Subscribe(callMeWithoutSending);
+            Assert.AreEqual(1, callCount);
+            Assert.IsTrue(signal.HasValue);
+            Assert.AreEqual((42, 77), values);
+
+            // After firing signal
+            signal.Send(99, 100);
+            Assert.AreEqual(2, callCount);
+            Assert.IsTrue(signal.HasValue);
+            Assert.AreEqual((99, 100), signal.Value);
         }
 
         [Test]

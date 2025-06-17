@@ -57,6 +57,14 @@ namespace huacanacha.signal
         public T Value => HasValue ? _cachedValue : default(T);
         override public bool HasListeners => true; // Always true, because we cache the value.
 
+        /// <summary>Default constructor. Will not have an initial value set.</summary>
+        public CachedSignal() {}
+        /// <summary>Constructor that also sets initial value.</summary>
+        public CachedSignal(T initialValue) {
+            _cachedValue = initialValue;
+            HasValue = true;
+        }
+
 		/// <summary>
 		/// Adds the listener and calls immediately with the cached value, if it exists.
 		/// </summary>
@@ -115,6 +123,15 @@ namespace huacanacha.signal
         public bool HasValue {get; private set;}
         public ValueTuple<T,U> Value => HasValue ? _cachedValue : default((T,U));
         override public bool HasListeners => true; // Always true, because we cache the value.
+
+        /// <summary>Default constructor. Will not have an initial value set.</summary>
+        public CachedSignal() {}
+        /// <summary>Constructor that also sets initial value.</summary>
+        public CachedSignal(T initialValue1, U initialValue2) {
+            _cachedValue.Item1 = initialValue1;
+            _cachedValue.Item2 = initialValue2;
+            HasValue = true;
+        }
 
 	    /// <summary>
         /// Adds the listener, and calls immediately if cached signal exists.
